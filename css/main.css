@@ -51,6 +51,11 @@ ul.nobullets li {
   list-style: none;
 }
 
+.resize-bg {
+  width: 100%;
+  height: auto;
+}
+
 .resize-1 {
   width: 40%;
   height: auto;

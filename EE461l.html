@@ -8,32 +8,35 @@
 		<div class="container" style="padding-top: 15px;">
 			</div>
 			<h1>What's In Your Fridge?</h1>
+			<hr>
 			<p>University Texas at Austin's EE461L Data Science Lab Final Project<br>
 				<em>Authors: James Sullivan, Zachary Chilton, Young Joon Lee, Royce Hong, Erick Li, Zander Tedjo </em>
 			</p>
 		</div>
+		<center><img src="assets/images/intro-bg.jpg" class="resize-bg"></img></center>
+		<text style="color:grey; float:right; padding-right: 5px; font-size: 10px">image from freepik </text>
+		<br>
 
-		<hr>
 		<br>
 
 		<h2>Problem Description</h2>
-		<p>The idea is simple; a user wants to be able to take a picture of the inside of their fridge to figure out what recipes they can make from its contents. Our job is obviously the difficult part; figuring out the areas of their image that could be a grocery item, figuring out what that grocery item is, and then taking all of those identified items to search for what they can make.</p>
+		<p><i>"What should I cook for dinner?"</i> is a lifelong question for anyone. Our indecisive minds constantly struggle with choosing what to eat for dinner, and we waste so much time of our precious time everyday thinking about what to eat. The idea is simple: User takes a picture of the inside of their fridge to figure out what recipes they can make from its contents. Our job is obviously the difficult part; figuring out the areas of their image that could be a grocery item, figuring out what that grocery item is, and then taking all of those identified items to search for what they can make.</p>
 		<br>
 		<h2>Overview</h2>
-		<p>Our project can be broken down into three parts. In order to detect food items within a large image of a fridge, we used the RCNN model and its variations for region proposal. (RCNN stands for regional convolutional neural network). Next, we used Tensorflow and a pretrained model to classify images of food items. Finally, we used the Spoonacular API to generate recipe ideas from a list of ingredients. The primary reason why we decide to split our process into three steps rather than simply use a RCNN to detect and classify food is because of datasets, or lack thereof. While there are many food datasets available online, there weren’t many that were properly formatted with bounding boxes and labels to reliably have one model do everything. As a result, we decide to use two separate models to perform object detection and classification.</p>
+		<p>Our project can be broken down into three parts. First, in order to detect food items within a large image of a fridge, we used a Regional Convolutional Neural Network (RCNN) model and its variations for region proposal. Next, we used Tensorflow and a pretrained model to classify images of food items. Finally, we used the Spoonacular API to generate recipe ideas from a list of ingredients. The primary reason why we decide to split our process into three steps rather than simply use a RCNN to detect and classify food is because of datasets, or lack thereof. While there are many food datasets available online, there weren’t many that were properly formatted with bounding boxes and labels to reliably have one model do everything. As a result, we decided to use two separate models to perform object detection and classification.</p>
 		<br>
 
 		<h2>Datasets</h2>
 		<p>Thankfully, food is pretty common in our lives, so there were already quite a few datasets dedicated to classifying it. Certain datasets were used to train the region proposal network and  others were used to train the food classification. We explored many sources of data, and will highlight the most significant ones.</p>
 
 		<h2><i>Region Proposal Datasets</i></h2>
-		<p>For the region proposal part, there weren’t as many datasets that had positional information, so we were only able to work with the COCO and MVTec datasets. The COCO dataset is a large-scale object detection, segmentation, and captioning dataset. COCO stands for Common Objects in Context. It contains 1.5 million object instances and 80 object categories. COCO and MVTec were annotated using a .json file, so for the faster rcnn model we had to reformat the dataset into .xml files.</p>
+		<p>For the region proposal part, unfortunately there were not many datasets that had positional information, so we were only able to work with the COCO and MVTec datasets. The COCO dataset is a large-scale object detection, segmentation, and captioning dataset. COCO stands for Common Objects in Context. It contains 1.5 million object instances and 80 object categories. COCO and MVTec were annotated using a .json file, so for the faster rcnn model we had to reformat the dataset into .xml files.</p>
 
 		<center><img src="assets/images/coco.png"></img></center><br>
 		<center>Figure 1 - COCO Dataset</center> <br>
 
 		<p>The MVTec Densely Segmented Supermarket (D2S) dataset is a benchmark for instance-aware semantic segmentation in an industrial domain. It contains 21,000 high-resolution images with pixel-wise labels of all object instances. The objects comprise groceries and everyday products from 60 categories. The benchmark is designed such that it resembles the real-world setting of an automatic checkout, inventory, or warehouse system. An example image is shown below in Figure 2. </p>
-		<center><img src="assets/images/mvtec.jpg"></img></center><br>
+		<center><img src="assets/images/mvtec.jpg" class="resize-1"></img></center><br>
 		<center>Figure 2 - MVTec Dataset</center><br>
 
 		<h2><i>Classifier Datasets</i></h2>
@@ -48,7 +51,7 @@
 		<center><img src="assets/images/food101.png"></img></center><br>
 		<center>Figure 4 - Food 101 Dataset</center><br>
 
-		<p>The Freiburg Groceries dataset was part of a paper written by Philipp Jund, Nichola Abdo, Andreas Eitel, and Wolfram Burgard from the University of Freiburg in Germany. The dataset consists of 5,000 images covering 25 different classes of groceries, with at least 97 images per class. Some classes include “Beans”, “Cake”, “Pasta”, and “Spices”. The images were from real-world settings and include a large variety of perspectives, lighting conditions, and degrees of clutter. This dataset shows a lot of potential, but a challenge we had was its small number of classes and the broadness of those classes.</p>
+		<p>The Freiburg Groceries dataset is from the paper written by Philipp Jund, Nichola Abdo, Andreas Eitel, and Wolfram Burgard from the University of Freiburg in Germany. The dataset consists of 5,000 images covering 25 different classes of groceries, with at least 97 images per class. Some classes include “Beans”, “Cake”, “Pasta”, and “Spices”. The images were from real-world settings and include a large variety of perspectives, lighting conditions, and degrees of clutter. This dataset shows a lot of potential, but the challenge we had was its small number of classes and the broadness of those classes.</p>
 
 		<center><img src="assets/images/freiburg.png" class="resize-2"></img></center><br>
 		<center>Figure 5 - Freiburg Groceries Dataset</center><br>
@@ -63,19 +66,19 @@
 		<center>Figure 6 - R-CNN Model</center><br>
 
 		<h2><i>Fast R-CNN</i></h2>
-		<p>Fast R-CNN improves upon R-CNN by feeding the entire input image at once to the convolutional neural network and then generating a feature map. This feature map then identifies the proposal regions, warps them into squares, and then attempts classification. The ability to prevent 2000 classifications through the use of a convolution neural network saves a lot of time, with some results showing a speedup factor of nearly 10x. In Figure 7, we see how this model is different from the previous one. Now, the entire image is fed at once in order to identify regions and attempt classification on those.</p>
+		<p>Fast R-CNN improves upon R-CNN by feeding the entire input image at once to the convolutional neural network and then generating a feature map. This feature map then identifies the proposal regions, warps them into squares, and then attempts classification. The ability to prevent 2000 classifications through the use of a convolution neural network saves a lot of time, with some results showing a speedup factor of nearly 10 times. In Figure 7, we see how this model is different from the previous one. Now, the entire image is fed at once in order to identify regions and attempt classification on those.</p>
 		<center><img src="assets/images/fastrcnn.png" class="resize-1"></img></center><br>
 		<center>Figure 7 - Fast R-CNN</center><br>
 
 		<h2><i>Faster R-CNN</i></h2>
 		<p>Faster R-CNN improves upon both of the previously mentioned methods through the elimination of the use of selective search, which is a slow and time-consuming process. An object detection algorithm is instead used to allow the network to learn the region proposals.
-		Similar to Fast R-CNN, the image is used to generate a convolutional feature map, but instead of using selective search, an entirely separate network is used to predict region proposals. This is akin to the difference between grid search versus Bayesian Optimization in order to find hyperparameters. This is the model we decided to use for object detection.
-		The model we decided to use for object detection was an FRCNN model implemented using Keras. This model was convenient for our project because the RPN could be trained separately from the rest of the network. RPN first slides over the feature map, which is the output of the convoluntional layer, and calculates the probability of a proposal being an object. This probability is then fed into the classifer as an input. </p>
+		Similar to Fast R-CNN, the image is used to generate a convolutional feature map, but instead of using selective search, an entirely separate network is used to predict region proposals. This is akin to the difference between grid search versus Bayesian Optimization in order to find hyperparameters. This is the model we decided to use for our object detection.
+		The specific model we decided to use for object detection was an FRCNN model implemented using Keras. This model was convenient for our project because the RPN could be trained separately from the rest of the network. RPN first slides over the feature map, which is the output of the convoluntional layer, and calculates the probability of a proposal being an object. This probability is then fed into the classifer as an input. </p>
 		<center><img src="assets/images/fasterrcnn.png" class="resize-1"></img></center><br>
 		<center>Figure 8 - Faster R-CNN Model</center><br>
 
 		<h2><i>Mask R-CNN</i></h2>
-		<p>Mask R-CNN is an extension of Faster RCNN in which an extra branch is added to predict the outline of the object on top of its bounding box. The implementation we tried was built using TensorFlow and pretrained on MS COCO. We then tried to train on top of MS COCO the MVTec dataset. A major drawback with using MRCNN was it could only be trained using datasets with images that had fully classified and labeled bounding boxes, which made the scope of usable datasets extremely limited. Training this model turned out to be extremely slow and with too few computational resources to operate this model efficiently, so we decided to not to use this model.</p>
+		<p>Mask R-CNN is an extension of Faster RCNN in which an extra branch is added to predict the outline of the object on a pixel level on top of its bounding box. The implementation we tried was built using TensorFlow and pretrained on MS COCO. We then tried to train on top of MS COCO the MVTec dataset. A major drawback with using Mask RCNN was that it could only be trained using datasets with images that had fully classified and labeled bounding boxes, which made the scope of usable datasets extremely limited. Training this model turned out to be extremely slow and with too few computational resources to operate this model efficiently, so we decided to not to use this model.</p>
 
 		<center><img src="assets/images/maskrcnn.png" class="resize-1"></img></center><br>
 		<center>Figure 9 - Mask R-CNN Example</center><br>
@@ -103,16 +106,27 @@
 		<center>Figure 12 - Spoonacular API</center><br>
 
 		<br>
+
+		<h2>Demo</h2>
+		<p>After training our Faster RCNN model, we tested with a new image. Below is the image we tested our final model with.</p>
+		<center><img src="assets/images/testimage.png" class="resize-1"></img></center><br>
+		<p>
+				<code style="background:#F8F8FF">python3 test_model.py --path test_image.png --load rpn.resnet50.weights.60-1.35.hdf5</code>
+		</p>
+		<center><img src="assets/images/output.png" class="resize-2"></img></center><br>
+		<p>Although it did not detect and identify every item correctly, it displayed a fair level of accuracy with a random image. Spoonacular API also suggested various dishes based on the detected ingredients.</p>
+		<br>
+
 		<h2>Challenges/Next Steps</h2>
 		<p>One issue that we ran into was moving images from our region proposal model to our classifier model, as our region proposal network would provide us with “region of interest” coordinates, which weren’t an exact 1-to-1 mapping to the original image like we were hoping.
 		Another improvement we could make is gathering more datasets for image classification. A larger and more diverse set of data would enable us to increase the number of food classes as well as further increase our accuracy, thus creating a more powerful classification model.</p>
-
 		<br>
 
 		<h2>References</h2>
 		<ul class="nobullets">
 			<li>B, Dan. “Food 101.” Kaggle, 3 Jan. 2018, www.kaggle.com/dansbecker/food-101.</li><br>
 			<li>Eitel, Andreas. “Freiburg Groceries Dataset.” Andreas Eitel - Autonomous Intelligent Systems, 2016, aisdatasets.informatik.uni-freiburg.de/freiburg_groceries_dataset/.</li><br>
+			<li>Freepik, Freepik. “Graphic Resources for Everyone.” Freepik, 14 Apr. 2020, www.freepik.com/.</li><br>
 			<li>Gandhi, Rohith. “R-CNN, Fast R-CNN, Faster R-CNN, YOLO - Object Detection Algorithms.” Medium, Towards Data Science, 9 July 2018, towardsdatascience.com/r-cnn-fast-r-cnn-faster-r-cnn-yolo-object-detection-algorithms-36d53571365e.</li><br>
 			<li>He, Kaiming. “Convolutional Feature Maps.” Convolutional Feature Maps, 2015, kaiminghe.com/iccv15tutorial/iccv2015_tutorial_convolutional_feature_maps_kaiminghe.pdf.</li><br>
 			<li>Klasson, Marcus, et al. “A Hierarchical Grocery Store Image Dataset with Visual and Semantic Labels.” ArXiv, 3 Jan. 2019, arxiv.org/pdf/1901.00711.pdf.</li><br>
@@ -126,7 +140,7 @@
 
 		<footer>
     		<ul>
-        		<li><a href="https://github.com/youngtothelee">github</a></li>
+					<li><a href="mailto:ylee8993@gmail.com">email</a></li>
 			</ul>
 		</footer>
 	</body>
