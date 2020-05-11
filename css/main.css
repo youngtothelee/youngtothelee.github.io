@@ -42,11 +42,19 @@ ul.posts li {
     list-style: none;
 }
 
+ul.nobullets {
+  padding-left: 10px;
+  margin-left: 0px;
+}
+
+ul.nobullets li {
+  list-style: none;
+}
+
 .resize-1 {
   width: 40%;
   height: auto;
 }
-
 
 .resize-2 {
   width: 70%;
